@@ -1,0 +1,19 @@
+@startuml
+
+actor User
+participant Chatbot
+participant RecipeDB
+
+User -> Chatbot: 요청(특정 재료로 만들 수 있는 요리)
+Chatbot -> RecipeDB: 요리 조회
+RecipeDB -> Chatbot: 가능한 요리 반환
+Chatbot -> User: 추천된 요리 목록 제공
+
+User -> Chatbot: 특정 요리 선택
+Chatbot -> User: 요리 과정 안내 (Step-by-Step)
+
+User -> Chatbot: 특정 재료 없음 알림
+Chatbot -> Chatbot: 대체 재료 검색
+Chatbot -> User: 대체 재료 추천
+
+@enduml

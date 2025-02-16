@@ -1,0 +1,74 @@
+@startuml
+
+' 사용자 정보 클래스
+class User {
+    + user_id: UUID  ' 사용자의 고유 식별자
+    + username: String  ' 사용자의 이름
+    + preferred_cuisine: List<String>  ' 선호하는 요리 종류 목록
+    + saved_recipes: List<Recipe>  ' 사용자가 저장한 레시피 목록
+}
+
+' 레시피 정보 클래스
+class Recipe {
+    + recipe_id: UUID  ' 레시피의 고유 식별자
+    + name: String  ' 레시피 이름
+    + ingredients: List<String>  ' 필요한 재료 목록
+    + steps: List<String>  ' 요리 단계 목록
+    + calories: Int  ' 칼로리 정보
+}
+
+' 챗봇 기능 클래스
+class Chatbot {
+    + recommendRecipes(user: User, ingredients: List<String>): List<Recipe>  
+      ' 사용자의 선호 요리 및 제공된 재료를 기반으로 레시피 추천
+
+    + guideCooking(recipe_id: UUID, step: Int): String  
+      ' 특정 레시피의 특정 단계에 대한 가이드를 제공
+
+    + suggestAlternatives(ingredients: String): String  
+      ' 특정 재료의 대체 재료를 추천
+}
+
+' 대화 관련 API
+class ConversationAPI {
+    + GET /api/conversations/{session_id} : 특정 사용자의 대화 조회  
+      ' 주어진 세션 ID에 해당하는 대화 내역을 가져옴
+
+    + POST /api/conversations : 새로운 대화 생성  
+      ' 새로운 대화 세션을 생성
+}
+
+' 메시지 관련 API
+class MessageAPI {
+    + GET /api/conversations/{session_id}/messages : 특정 대화의 메시지 조회  
+      ' 주어진 세션의 모든 메시지를 조회
+
+    + POST /api/conversations/{session_id}/messages : 메시지 추가  
+      ' 특정 대화 세션에 새 메시지를 추가
+}
+
+' 레시피 관련 API
+class RecipeAPI {
+    + GET /api/recipes/{recipe_id} : 특정 레시피 조회  
+      ' 주어진 레시피 ID에 해당하는 레시피 정보 반환
+
+    + GET /api/recipes : 레시피 목록 조회  
+      ' 저장된 모든 레시피 목록을 조회
+
+    + POST /api/recipes : 새로운 레시피 추가  
+      ' 새로운 레시피 정보를 추가
+}
+
+' API 관계 정의
+User --> Chatbot : inputs ingredients, queries recipe steps  
+' 사용자가 챗봇에게 재료 입력 및 요리 단계 요청
+
+Chatbot --> Recipe : fetches recommended recipes  
+' 챗봇이 레시피 정보를 검색하여 추천
+
+Chatbot --> User : returns recommendations, guides steps  
+' 챗봇이 추천된 레시피를 반환하고 요리 과정을 안내
+
+ConversationAPI "1" --o{ "N" MessageAPI : "has messages"  
+' 하나의 대화(Conversation)에 여러 개의 메시지(Message)가 포함됨
+@enduml
